@@ -1,12 +1,13 @@
 import * as BABYLON from "babylonjs";
 import { Charactere } from "./Charactere";
-import { XRInputSource, XRHandedness, XRSpace } from 'webxr-polyfill';
 export class AppOne {
     engine: BABYLON.Engine;
     scene: BABYLON.Scene | null;
     charactere: Charactere;
     time = Date.now();
     xr: any;
+    leftController : BABYLON.AbstractMesh | null;
+    rightController : BABYLON.AbstractMesh | null;
 
     constructor(readonly canvas: HTMLCanvasElement) {
         this.engine = new BABYLON.Engine(canvas);
@@ -19,6 +20,9 @@ export class AppOne {
         );
         //init charactere controler
         this.charactere = Charactere.empty();
+
+        this.leftController = null;
+        this.rightController = null;
     }
 
     debug(debugOn: boolean = true) {
@@ -98,15 +102,20 @@ export class AppOne {
             this.xr = await scene.createDefaultXRExperienceAsync({
                 floorMeshes: [env.ground],
             });
-            this.xr.input.onControllerAddedObservable.add((inputSource: {
-                inputSource: XRInputSource; onMotionControllerInitObservable: { add: (arg0: (motionController: any) => void) => void; }; 
-}) => {
-                inputSource.onMotionControllerInitObservable.add((motionController: any) => {
-                    //inputsource
-                    const is:XRInputSource = inputSource.inputSource;
-                    const component = motionController.getMainComponent();
-                    const handedness = is.handedness;
-                    
+
+
+            BABYLON.WebXRDefaultExperience.CreateAsync(scene).then((defaultExperience) => {  //
+                defaultExperience.input.onControllerAddedObservable.add((controller : BABYLON.WebXRInputSource) => {
+                    const isHand = controller.inputSource.hand;
+                    if (isHand) return;
+
+                    controller.onMotionControllerInitObservable.add((motionController : BABYLON.WebXRAbstractMotionController) =>{
+                        const isLeft = motionController.handedness === 'left';
+                        controller.onMeshLoadedObservable.add((mesh : BABYLON.AbstractMesh) => {
+                            if (isLeft) this.leftController = mesh;
+                            else this.rightController = mesh;
+                        });
+                    });
                 });
             });
         }

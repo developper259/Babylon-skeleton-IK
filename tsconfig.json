@@ -15,5 +15,5 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true
   },
-  "include": ["./src", "./types", "vite.config.js"]
+  "include": ["./src", "vite.config.js"]
 }
