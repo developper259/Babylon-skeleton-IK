@@ -1,0 +1,26 @@
+{
+  "name": "friends",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "tsc && vite build",
+    "preview": "tsc && vite build && vite preview --host --open"
+  },
+  "typeRoots": [
+    "node_modules/@types",
+    "src/@types"
+  ],
+  "dependencies": {
+    "@babylonjs/core": "^6.24.0",
+    "@babylonjs/loaders": "^6.24.0",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "@vitejs/plugin-react": "^4.1.0",
+    "babylonjs": "^6.24.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/cannon": "^0.1.11",
+    "@types/node": "^20.8.7"
+  }
+}
